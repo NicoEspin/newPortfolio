@@ -5,13 +5,19 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Logo from "@/components/Logo";
 
 const LINKS = [
-  { href: "#work", label: "Work" },
+  { href: "/work", label: "Work" },
   { href: "#outcomes", label: "Outcomes" },
   { href: "#experience", label: "Experience" },
   { href: "#about", label: "About" },
   { href: "#contact", label: "Contact" },
+];
+
+const SOCIALS = [
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/nicol%C3%A1s-espin/" },
+  { label: "GitHub", href: "https://github.com/NicoEspin" },
 ];
 
 export default function Nav() {
@@ -71,68 +77,69 @@ export default function Nav() {
     { dependencies: [open] }
   );
 
-  const sectionHref = (hash: string) => (isHome ? hash : `/${hash}`);
+  const sectionHref = (href: string) => {
+    if (!href.startsWith("#")) return href;
+    return isHome ? href : `/${href}`;
+  };
 
   return (
-    <header
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 150,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "20px 24px",
-        mixBlendMode: "difference",
-        color: "var(--color-paper)",
-      }}
-    >
-      <Link
-        href="/"
-        aria-label="NE. — Inicio"
-        style={{ fontWeight: 800, fontSize: "1.1rem", letterSpacing: "-0.02em" }}
-      >
-        NE<span style={{ color: "var(--color-signal)" }}>.</span>
-      </Link>
-
-      <nav aria-label="Navegación principal" className="hidden-mobile">
-        <ul style={{ display: "flex", gap: 28, listStyle: "none", margin: 0, padding: 0 }}>
-          {LINKS.map((l) => (
-            <li key={l.href}>
-              <Link
-                href={sectionHref(l.href)}
-                className="mono-label"
-                style={{ fontSize: "0.75rem" }}
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-controls="mobile-nav"
-        aria-label={open ? "Cerrar menú" : "Abrir menú"}
-        className="show-mobile"
+    <header>
+      <div
         style={{
-          background: "none",
-          border: "none",
-          color: "inherit",
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.75rem",
-          letterSpacing: "0.06em",
-          cursor: "pointer",
-          padding: 8,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 150,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "20px 24px",
+          mixBlendMode: "difference",
+          color: "var(--color-paper)",
         }}
       >
-        {open ? "CLOSE" : "MENU"}
-      </button>
+        <Link href="/" aria-label="NE. — Inicio" style={{ display: "inline-flex" }}>
+          <Logo style={{ height: 22, width: "auto" }} />
+        </Link>
+
+        <nav aria-label="Navegación principal" className="hidden-mobile">
+          <ul style={{ display: "flex", gap: 28, listStyle: "none", margin: 0, padding: 0 }}>
+            {LINKS.map((l) => (
+              <li key={l.href}>
+                <Link
+                  href={sectionHref(l.href)}
+                  className="mono-label"
+                  style={{ fontSize: "0.75rem" }}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
+          aria-label={open ? "Cerrar menú" : "Abrir menú"}
+          className="show-mobile"
+          style={{
+            background: "none",
+            border: "none",
+            color: "inherit",
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.75rem",
+            letterSpacing: "0.06em",
+            cursor: "pointer",
+            padding: 8,
+          }}
+        >
+          {open ? "CLOSE" : "MENU"}
+        </button>
+      </div>
 
       <div
         id="mobile-nav"
@@ -163,8 +170,30 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <div className="mono-label" style={{ marginTop: 40, color: "var(--color-steel)" }}>
-          Córdoba, AR
+        <div
+          style={{
+            marginTop: 40,
+            display: "flex",
+            gap: 20,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <span className="mono-label" style={{ color: "var(--color-steel)" }}>
+            Córdoba, AR
+          </span>
+          {SOCIALS.map((s) => (
+            <a
+              key={s.label}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mono-label"
+              style={{ color: "var(--color-steel)" }}
+            >
+              {s.label}
+            </a>
+          ))}
         </div>
       </div>
     </header>

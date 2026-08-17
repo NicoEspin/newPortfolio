@@ -9,12 +9,13 @@ import {
   markLoaderSeen,
   prefersReducedMotion,
 } from "@/lib/motion";
+import { LOGO_DOT, LOGO_E_PATH, LOGO_N_PATH, LOGO_VIEWBOX } from "@/lib/logo";
 
 export default function Loader() {
   const [visible, setVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const dotRef = useRef<HTMLSpanElement | null>(null);
+  const dotRef = useRef<SVGCircleElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -79,39 +80,32 @@ export default function Loader() {
         justifyContent: "center",
       }}
     >
-      <div
+      <svg
+        viewBox={LOGO_VIEWBOX}
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
         style={{
-          fontFamily: "var(--font-display)",
-          fontWeight: 800,
-          fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
+          width: "clamp(220px, 32vw, 380px)",
+          height: "auto",
           color: "var(--color-paper)",
-          letterSpacing: "-0.03em",
-          display: "flex",
           overflow: "hidden",
         }}
       >
-        <span className="ne-letter" style={{ display: "inline-block" }}>
-          N
-        </span>
-        <span className="ne-letter" style={{ display: "inline-block" }}>
-          E
-        </span>
-        <span
+        <g className="ne-letter">
+          <path fill="currentColor" d={LOGO_N_PATH} />
+        </g>
+        <g className="ne-letter">
+          <path fill="currentColor" d={LOGO_E_PATH} />
+        </g>
+        <circle
           ref={dotRef}
           className="ne-letter"
-          aria-hidden="true"
-          style={{
-            display: "inline-block",
-            width: "0.16em",
-            height: "0.16em",
-            borderRadius: "50%",
-            background: "var(--color-signal)",
-            alignSelf: "flex-end",
-            marginLeft: "0.06em",
-            marginBottom: "0.12em",
-          }}
+          fill="var(--color-signal)"
+          cx={LOGO_DOT.cx}
+          cy={LOGO_DOT.cy}
+          r={LOGO_DOT.r}
         />
-      </div>
+      </svg>
     </div>
   );
 }

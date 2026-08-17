@@ -76,6 +76,11 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
             >
               {project.name}
             </h1>
+            {project.status === "concept" && (
+              <p className="mono-label" style={{ color: "var(--color-steel)", marginTop: 10 }}>
+                DEMO CONCEPTUAL — NO ES UN CLIENTE REAL
+              </p>
+            )}
           </div>
           <div className="mono-label" style={{ color: "var(--color-steel)", textAlign: "right" }}>
             {project.year}
@@ -86,15 +91,35 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
 
         <Reveal>
           <div
-            aria-hidden="true"
             style={{
               width: "100%",
               height: "clamp(220px, 40vw, 440px)",
-              background: "linear-gradient(160deg, var(--color-signal), var(--color-ink) 70%)",
+              overflow: "hidden",
               border: "1px solid var(--color-line-dark)",
               marginTop: 40,
             }}
-          />
+          >
+            {project.video ? (
+              <video
+                src={project.video}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-label={`Demo en video de ${project.name}`}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            ) : (
+              <img
+                src={project.heroImage.src}
+                width={project.heroImage.width}
+                height={project.heroImage.height}
+                alt={`Captura de ${project.name}`}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            )}
+          </div>
         </Reveal>
 
         <div
@@ -118,6 +143,63 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
               <p style={{ marginTop: 10, lineHeight: 1.5 }}>{d.value}</p>
             </div>
           ))}
+        </div>
+
+        {project.gallery.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1px",
+              background: "var(--color-line-dark)",
+              border: "1px solid var(--color-line-dark)",
+              marginTop: 64,
+            }}
+          >
+            {project.gallery.map((img, i) => (
+              <Reveal key={i}>
+                <div style={{ position: "relative", background: "var(--color-void)" }}>
+                  <img
+                    src={img.src}
+                    width={img.width}
+                    height={img.height}
+                    alt={`Captura ${i + 1} de ${project.name}`}
+                    style={{ width: "100%", height: "auto", display: "block" }}
+                  />
+                  <span
+                    className="mono-label"
+                    style={{
+                      position: "absolute",
+                      top: 16,
+                      left: 16,
+                      color: "var(--color-paper)",
+                      background: "rgba(8, 9, 10, 0.55)",
+                      padding: "4px 8px",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")} / {String(project.gallery.length).padStart(2, "0")}
+                  </span>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        )}
+
+        <div style={{ marginTop: 40, display: "flex", justifyContent: "flex-end" }}>
+          <a
+            href={project.demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor-hover
+            className="mono-label"
+            style={{
+              color: "var(--color-signal)",
+              borderBottom: "1px solid var(--color-signal)",
+              paddingBottom: 4,
+            }}
+          >
+            VER SITIO EN VIVO ↗
+          </a>
         </div>
 
         <div

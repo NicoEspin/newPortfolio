@@ -1,6 +1,7 @@
 import { projects } from "@/lib/projects";
 import Reveal from "@/components/Reveal";
 import WorkRow from "@/components/sections/WorkRow";
+import SignalLink from "@/components/SignalLink";
 
 export default function SelectedWork() {
   return (
@@ -36,6 +37,23 @@ export default function SelectedWork() {
           </Reveal>
         ))}
       </div>
+
+      <Reveal delay={projects.length * 0.06}>
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: 48 }}>
+          <SignalLink
+            href="/work"
+            data-cursor-hover
+            className="mono-label"
+            style={{
+              color: "var(--color-ink)",
+              borderBottom: "1px solid var(--color-ink)",
+              paddingBottom: 6,
+            }}
+          >
+            VER TODOS LOS PROYECTOS →
+          </SignalLink>
+        </div>
+      </Reveal>
     </section>
   );
 }

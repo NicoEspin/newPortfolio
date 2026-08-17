@@ -56,6 +56,7 @@
 html {
   background: var(--color-void);
   color-scheme: dark;
+  overflow-x: hidden;
 }
 
 body {
@@ -136,6 +137,12 @@ a {
 
 .hero-text {
   order: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 96px 24px 40px;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-right {
@@ -180,22 +187,127 @@ a {
   }
 }
 
+/* Spline wrapper: overscan only where the mouse-driven parallax (pointer:fine
+   only, see Hero.tsx) can uncover an edge. On touch the wrapper never moves,
+   so it stays inset:0 — a wider box would push the mobile layout viewport
+   past device-width and shove the fixed navbar off-screen (real overflow-x
+   bug, not just a clipped one: .hero-right's overflow:hidden clips it
+   visually but WebKit still counts it when sizing the viewport). */
+.hero-spline-overscan {
+  position: absolute;
+  inset: 0;
+}
+
+@media (pointer: fine) {
+  .hero-spline-overscan {
+    inset: -32px;
+  }
+}
+
 .hero-headline {
-  max-width: 13ch;
+  max-width: min(86vw, 8.2ch);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.hero-name-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.hero-name-lineInner {
+  display: block;
+}
+
+.hero-copy {
+  display: grid;
+  align-content: end;
+}
+
+.hero-role {
+  margin: 0.85rem 0 0;
+  color: var(--color-steel);
+}
+
+.hero-positioning {
+  margin: 1rem 0 0;
+  max-width: 28rem;
+  font-size: clamp(1rem, 1.1rem + 0.2vw, 1.18rem);
+  line-height: 1.2;
+  color: var(--color-paper);
+  text-wrap: pretty;
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.hero-status {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.hero-cta {
+  border-bottom: 1px solid var(--color-paper);
+  padding-bottom: 0.25rem;
+  text-decoration: none;
+}
+
+.hero-cta:focus-visible {
+  outline: 1px solid var(--color-paper);
+  outline-offset: 6px;
 }
 
 @media (max-width: 767px) {
+  .hero-text {
+    padding: 24px 24px 40px;
+  }
+
+  .hero-copy {
+    min-height: calc(54svh - 64px);
+  }
+
   .hero-headline {
-    max-width: 11ch;
-    font-size: clamp(2.25rem, 9vw, 3.5rem) !important;
+    max-width: 100%;
+    font-size: clamp(4rem, 18vw, 6rem) !important;
+  }
+
+  .hero-role {
+    margin-top: 0.7rem;
+  }
+
+  .hero-positioning {
+    max-width: 21rem;
+    font-size: clamp(1rem, 0.92rem + 0.55vw, 1.12rem);
+  }
+
+  .hero-meta {
+    align-items: flex-start;
+  }
+
+  .hero-cta {
+    align-self: flex-start;
   }
 }
 
 @media (min-width: 900px) {
   .hero-headline {
-    /* left column is 44% wide — let it wrap to the column, not a fixed ch count */
-    max-width: 100%;
-    font-size: clamp(2.75rem, 3.2vw + 1.2rem, 5.5rem) !important;
+    max-width: min(100%, 8.5ch);
+    font-size: clamp(5.5rem, 8.5vw, 10.5rem) !important;
+  }
+
+  .hero-copy {
+    max-width: min(100%, 42rem);
+  }
+
+  .hero-positioning {
+    max-width: 30rem;
   }
 }
 
@@ -224,6 +336,17 @@ a {
   flex-shrink: 0;
 }
 
+.work-row__thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.work-row__meta {
+  white-space: nowrap;
+}
+
 .work-row:hover .work-row__thumb,
 .work-row:focus-within .work-row__thumb {
   width: 96px;
@@ -245,6 +368,157 @@ a {
     margin-top: 20px;
     border-top: 1px solid var(--color-line-light);
     padding-top: 20px;
+  }
+  .work-row__meta {
+    white-space: normal;
+  }
+}
+
+/* Work index — full project archive, image-forward gallery, filterable.
+   Distinct identity from Selected Work's typographic list (see
+   docs/visual-direction.md): here the hero image always leads, no
+   hover-reveal, because this page is scanned as a gallery, not read as a
+   list. */
+.work-index {
+  background: var(--color-void);
+  color: var(--color-paper);
+  min-height: 100svh;
+  padding: 140px 24px 96px;
+}
+
+.work-index__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.work-index__head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 1px solid var(--color-line-dark);
+  padding-bottom: 32px;
+  margin: 24px 0 40px;
+}
+
+.work-index__title {
+  font-size: var(--text-display-l);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.96;
+  margin: 8px 0 0;
+  max-width: 14ch;
+}
+
+.work-index__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-bottom: 48px;
+}
+
+.work-index__filter {
+  background: none;
+  border: none;
+  padding: 6px 0;
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--color-steel);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.work-index__filter[data-active="true"] {
+  color: var(--color-signal);
+  border-bottom-color: var(--color-signal);
+}
+
+.work-index__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 56px 32px;
+}
+
+@media (min-width: 900px) {
+  .work-index__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .work-index__card:nth-child(even) {
+    margin-top: 64px;
+  }
+}
+
+.work-index__card {
+  display: block;
+}
+
+.work-index__card-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--color-line-dark);
+}
+
+.work-index__card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease-signal);
+}
+
+.work-index__card:hover .work-index__card-img,
+.work-index__card:focus-visible .work-index__card-img {
+  transform: scale(1.04);
+}
+
+.work-index__card-index,
+.work-index__card-status {
+  position: absolute;
+  top: 16px;
+  color: var(--color-paper);
+  background: rgba(8, 9, 10, 0.55);
+  padding: 4px 8px;
+}
+
+.work-index__card-index {
+  left: 16px;
+}
+
+.work-index__card-status {
+  right: 16px;
+}
+
+.work-index__card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-line-dark);
+}
+
+.work-index__card-name {
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.work-index__card-meta {
+  color: var(--color-steel);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .work-index {
+    padding: 120px 20px 72px;
+  }
+  .work-index__card-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
 }
 
@@ -493,13 +767,16 @@ a {
   overflow: hidden;
 }
 
-.outcomes-media__tag {
+.outcomes-media__curtain {
   position: absolute;
-  left: 16px;
-  bottom: 16px;
-  right: 16px;
-  color: var(--color-paper);
-  opacity: 0.55;
+  inset: 0;
+  background: var(--color-void);
+  pointer-events: none;
+  /* Default: not covering — this is the accessible no-JS/reduced-motion
+     baseline. The enhanced timeline explicitly sets scaleX:1 at mount
+     before animating it back down, so only the JS-driven reveal ever
+     hides the image. */
+  transform: scaleX(0);
 }
 
 .outcomes-copy {
@@ -539,20 +816,20 @@ a {
 @media (min-width: 900px) {
   .outcomes-act--order .outcomes-media,
   .outcomes-act--time .outcomes-media {
-    grid-column: 6 / span 7;
+    grid-column: 5 / span 8;
     grid-row: 1;
   }
   .outcomes-act--order .outcomes-copy,
   .outcomes-act--time .outcomes-copy {
-    grid-column: 1 / span 5;
+    grid-column: 1 / span 4;
     grid-row: 1;
   }
   .outcomes-act--sales .outcomes-media {
-    grid-column: 1 / span 7;
+    grid-column: 1 / span 8;
     grid-row: 1;
   }
   .outcomes-act--sales .outcomes-copy {
-    grid-column: 8 / span 5;
+    grid-column: 9 / span 4;
     grid-row: 1;
   }
 }
@@ -584,7 +861,7 @@ a {
   inset: 0;
   display: grid;
   align-content: center;
-  padding: clamp(96px, 11vw, 140px) clamp(24px, 5vw, 64px) clamp(56px, 9vw, 88px);
+  padding: clamp(72px, 8vw, 112px) clamp(24px, 5vw, 64px) clamp(40px, 6vw, 64px);
   opacity: 0;
 }
 
@@ -725,28 +1002,61 @@ a {
   }
 }
 
-.about-portrait-color,
-.about-portrait-mono {
+/* Portrait reveal — persona → código → sistema. Dos capas de imagen
+   idénticamente encuadradas; la máscara elíptica vive solo en la capa
+   "hot" (image-2). Ver AboutPortraitReveal.tsx para el mecanismo JS. */
+.portrait-reveal {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(120% 140% at 28% 12%, rgba(255, 77, 0, 0.18), transparent 55%),
-    linear-gradient(155deg, #2a2b2f 0%, #17181b 48%, #08090a 100%);
+  background: #08090a;
 }
 
-.about-portrait-mono {
-  filter: grayscale(1) contrast(1.08) brightness(0.96);
+.portrait-reveal__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 24%;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.portrait-reveal__img--hot {
+  opacity: 0;
+  will-change: opacity;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   -webkit-mask-image: radial-gradient(
-    circle var(--reveal-r, 0px) at var(--mx, 50%) var(--my, 50%),
-    transparent 0%,
-    transparent 70%,
-    black 100%
+    ellipse var(--rv-rx, 0px) var(--rv-ry, 0px) at var(--rv-x, -9999px) var(--rv-y, -9999px),
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 35%,
+    rgba(0, 0, 0, 0.9) 60%,
+    rgba(0, 0, 0, 0.3) 82%,
+    rgba(0, 0, 0, 0) 100%
   );
   mask-image: radial-gradient(
-    circle var(--reveal-r, 0px) at var(--mx, 50%) var(--my, 50%),
-    transparent 0%,
-    transparent 70%,
-    black 100%
+    ellipse var(--rv-rx, 0px) var(--rv-ry, 0px) at var(--rv-x, -9999px) var(--rv-y, -9999px),
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 35%,
+    rgba(0, 0, 0, 0.9) 60%,
+    rgba(0, 0, 0, 0.3) 82%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.portrait-reveal__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+  background: radial-gradient(
+    ellipse var(--rv-rx, 0px) var(--rv-ry, 0px) at var(--rv-x, -9999px) var(--rv-y, -9999px),
+    rgba(255, 77, 0, 0.14),
+    transparent 72%
   );
 }
 
@@ -778,16 +1088,6 @@ a {
   pointer-events: none;
 }
 
-.about-portrait-tag {
-  position: absolute;
-  left: clamp(20px, 5vw, 56px);
-  bottom: clamp(20px, 5vw, 40px);
-  z-index: 3;
-  color: var(--color-paper);
-  opacity: 0.55;
-  max-width: 40ch;
-  pointer-events: none;
-}
 
 .about-portrait-statement2 {
   margin: 0 0 0 auto;

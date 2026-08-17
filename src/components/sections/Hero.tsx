@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import SplitType from "split-type";
 import type { Application } from "@splinetool/runtime";
 import SplineScene from "@/components/SplineScene";
 import SplineErrorBoundary from "@/components/SplineErrorBoundary";
@@ -12,7 +11,7 @@ import { prefersReducedMotion } from "@/lib/motion";
 
 export default function Hero() {
   const rootRef = useRef<HTMLElement | null>(null);
-  const headlineRef = useRef<HTMLHeadingElement | null>(null);
+  const introRef = useRef<HTMLDivElement | null>(null);
   const splineWrapRef = useRef<HTMLDivElement | null>(null);
   const [showSpline, setShowSpline] = useState(false);
 
@@ -29,27 +28,71 @@ export default function Hero() {
 
   useGSAP(
     () => {
-      if (!headlineRef.current) return;
+      if (!introRef.current) return;
+
+      const nameLines = introRef.current.querySelectorAll(
+        "[data-hero-name-line]",
+      );
+      const role = introRef.current.querySelector("[data-hero-role]");
+      const positioning = introRef.current.querySelector(
+        "[data-hero-positioning]",
+      );
+      const footerItems = introRef.current.querySelectorAll(
+        "[data-hero-footer-item]",
+      );
+      const animatedItems = [
+        ...Array.from(nameLines),
+        ...(role ? [role] : []),
+        ...(positioning ? [positioning] : []),
+        ...Array.from(footerItems),
+      ];
+
+      if (!animatedItems.length) return;
 
       if (prefersReducedMotion()) {
-        gsap.set(headlineRef.current, { autoAlpha: 1 });
+        gsap.set(animatedItems, { autoAlpha: 1, clearProps: "transform" });
         return;
       }
 
-      const split = new SplitType(headlineRef.current, { types: "lines" });
-      gsap.set(headlineRef.current, { autoAlpha: 1 });
-      gsap.from(split.lines, {
-        yPercent: 110,
+      const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      gsap.set(animatedItems, { autoAlpha: 1 });
+
+      timeline.from(nameLines, {
+        yPercent: 112,
         opacity: 0,
         stagger: 0.08,
-        duration: 0.9,
-        delay: 0.3,
-        ease: "power3.out",
+        duration: 0.7,
+        delay: 0.22,
       });
 
-      return () => split.revert();
+      timeline.from(
+        [role, positioning],
+        {
+          y: 22,
+          opacity: 0,
+          duration: 0.48,
+          stagger: 0.08,
+        },
+        "<0.1",
+      );
+
+      timeline.from(
+        footerItems,
+        {
+          y: 18,
+          opacity: 0,
+          duration: 0.42,
+          stagger: 0.08,
+        },
+        "<0.14",
+      );
+
+      return () => {
+        timeline.kill();
+      };
     },
-    { scope: rootRef }
+    { scope: rootRef },
   );
 
   useGSAP(
@@ -76,7 +119,7 @@ export default function Hero() {
       window.addEventListener("mousemove", onMove);
       return () => window.removeEventListener("mousemove", onMove);
     },
-    { dependencies: [showSpline], scope: rootRef }
+    { dependencies: [showSpline], scope: rootRef },
   );
 
   const handleSplineLoad = (_app: Application) => {
@@ -97,32 +140,39 @@ export default function Hero() {
         overflow: "hidden",
       }}
     >
-      <div
-        className="hero-text"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "96px 24px 40px",
-          position: "relative",
-          zIndex: 2,
-        }}
-      >
+      <div className="hero-text">
         <div />
 
-        <div>
+        <div ref={introRef} className="hero-copy">
           <h1
-            ref={headlineRef}
             className="hero-headline"
+            aria-label="Nicolás Espin"
             style={{
-              visibility: "hidden",
               fontSize: "var(--text-display-l)",
               fontWeight: 800,
               letterSpacing: "-0.035em",
-              lineHeight: 0.98,
+              lineHeight: 0.82,
             }}
           >
-            Creative full-stack developer building digital products{" "}
+            <span className="hero-name-line">
+              <span className="hero-name-lineInner" data-hero-name-line>
+                NICOLAS
+              </span>
+            </span>
+            <span className="hero-name-line">
+              <span className="hero-name-lineInner" data-hero-name-line>
+                ESPIN<span style={{ color: "var(--color-signal)" }}>.</span>
+              </span>
+            </span>
+          </h1>
+
+          <p className="hero-role mono-label" data-hero-role>
+            FULL-STACK DEVELOPER
+          </p>
+
+          <p className="hero-positioning reading-measure" data-hero-positioning>
+            Diseño y desarrollo productos digitales desde la interfaz hasta la
+            infraestructura{" "}
             <em
               style={{
                 fontFamily: "var(--font-editorial)",
@@ -131,38 +181,23 @@ export default function Hero() {
                 color: "var(--color-signal-soft)",
               }}
             >
-              with pulse
+              con criterio
             </em>
             .
-          </h1>
+          </p>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              marginTop: 32,
-              flexWrap: "wrap",
-              gap: 16,
-            }}
-          >
-            <div className="mono-label" style={{ color: "var(--color-steel)" }}>
-              Córdoba, Argentina
-              <br />
-              <span style={{ color: "var(--color-signal)" }}>●</span> Available
-              for work
-            </div>
-
-            <a
-              href="#work"
-              className="mono-label"
-              style={{
-                borderBottom: "1px solid var(--color-paper)",
-                paddingBottom: 4,
-              }}
+          <div className="hero-meta">
+            <div
+              className="hero-status mono-label"
+              data-hero-footer-item
+              style={{ color: "var(--color-steel)" }}
             >
-              View Work ↓
-            </a>
+              <span>CÓRDOBA, ARGENTINA</span>
+              <span>
+                <span style={{ color: "var(--color-signal)" }}>●</span>{" "}
+                AVAILABLE FOR WORK
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -184,9 +219,13 @@ export default function Hero() {
               </div>
             }
           >
-            {/* inset is larger than the container (overscan) so the parallax
-                translate never uncovers an edge of .hero-right */}
-            <div ref={splineWrapRef} style={{ position: "absolute", inset: -32 }}>
+            {/* Overscan (inset: -32 on pointer:fine only, via .hero-spline-overscan)
+                covers the parallax translate range so it never uncovers an edge
+                of .hero-right. Parallax only runs on pointer:fine (see the
+                useGSAP above), so touch viewports stay inset:0 — a wider box
+                here would widen the mobile layout viewport past device-width
+                and push the fixed navbar off-screen. */}
+            <div ref={splineWrapRef} className="hero-spline-overscan">
               <SplineScene onLoad={handleSplineLoad} />
             </div>
           </SplineErrorBoundary>

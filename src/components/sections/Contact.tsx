@@ -55,7 +55,7 @@ export default function Contact() {
             margin: "20px 0 40px",
           }}
         >
-          Let&apos;s build something{" "}
+          Innovemos{" "}
           <em
             style={{
               fontFamily: "var(--font-editorial)",
@@ -64,7 +64,7 @@ export default function Contact() {
               color: "var(--color-signal-soft)",
             }}
           >
-            with pulse
+            Juntos
           </em>
           .
         </h2>

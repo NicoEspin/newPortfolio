@@ -36,11 +36,11 @@ export default function ExperienceEntry({
       </div>
 
       <h3 className="experience-row__role">{entry.role}</h3>
-      <p className="experience-row__org">{entry.org}</p>
+      <p className="experience-row__org">{entry.company}</p>
       <p className="experience-row__desc reading-measure">{entry.description}</p>
 
-      {entry.focus && entry.focus.length > 0 && (
-        <span className="mono-label experience-row__focus">{entry.focus.join(" · ")}</span>
+      {entry.technologies.length > 0 && (
+        <span className="mono-label experience-row__focus">{entry.technologies.join(" · ")}</span>
       )}
       <span className="mono-label experience-row__location">{entry.location}</span>
 

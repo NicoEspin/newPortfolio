@@ -90,6 +90,7 @@ export default function Outcomes() {
   const statementRef = useRef<HTMLSpanElement | null>(null);
   const actRefs = useRef<Array<HTMLDivElement | null>>([]);
   const mediaRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const curtainRefs = useRef<Array<HTMLDivElement | null>>([]);
   const copyRefs = useRef<Array<HTMLDivElement | null>>([]);
   const salesLineRef = useRef<HTMLSpanElement | null>(null);
 
@@ -99,16 +100,30 @@ export default function Outcomes() {
       const acts = actRefs.current;
       const media = mediaRefs.current;
       const copies = copyRefs.current;
-      if (!act1Ref.current || acts.some((a) => !a) || media.some((m) => !m)) return;
+      if (
+        !act1Ref.current ||
+        acts.some((a) => !a) ||
+        media.some((m) => !m) ||
+        !curtainRefs.current[0] ||
+        !curtainRefs.current[1]
+      )
+        return;
 
       wrapRef.current.classList.add("outcomes-story--enhanced");
+
+      const curtains = curtainRefs.current;
 
       // Initial states — set once, before any ScrollTrigger measures layout.
       gsap.set([premiseRef.current, statementRef.current], {
         clipPath: "inset(0 0 100% 0)",
       });
-      gsap.set(media[0], { clipPath: "inset(0 0 0 100%)" });
-      gsap.set(media[1], { clipPath: "inset(0 100% 0 0)" });
+      // Curtains cover their media fully, then shrink toward transform-origin
+      // to reveal it. transform-origin is the edge that stays put — the
+      // opposite edge is where the image becomes visible first. This is
+      // deliberately a transform (scaleX), not a clip-path string, so the
+      // reveal direction is unambiguous just from reading the origin.
+      gsap.set(curtains[0], { scaleX: 1, transformOrigin: "left center" }); // Orden — reveals right→left
+      gsap.set(curtains[1], { scaleX: 1, transformOrigin: "right center" }); // Ventas — reveals left→right
       gsap.set(media[2], { opacity: 0 });
       gsap.set(copies, { opacity: 0, y: 22 });
       if (salesLineRef.current) gsap.set(salesLineRef.current, { scaleX: 0 });
@@ -148,7 +163,7 @@ export default function Outcomes() {
             // transition window — a real cross-dissolve, not a hard cut).
             .to(act1Ref.current, { autoAlpha: 0, y: -shift, duration: 0.1, ease: "power2.inOut" }, 0.18)
             .to(acts[0], { opacity: 1, duration: 0.1, ease: "power2.inOut" }, 0.18)
-            .to(media[0], { clipPath: "inset(0 0 0 0%)", duration: 0.1, ease: "power2.inOut" }, 0.18)
+            .to(curtains[0], { scaleX: 0, duration: 0.1, ease: "power2.inOut" }, 0.18)
             .to(copies[0], { opacity: 1, y: 0, duration: 0.08, ease: "power2.out" }, 0.21)
 
             // Orden hold — a very leve internal drift, one motion only.
@@ -161,7 +176,7 @@ export default function Outcomes() {
             .to(acts[0], { autoAlpha: 0, duration: 0.1, ease: "power2.inOut" }, 0.43)
             .to(copies[0], { opacity: 0, duration: 0.06, ease: "none" }, 0.43)
             .to(acts[1], { opacity: 1, duration: 0.1, ease: "power2.inOut" }, 0.43)
-            .to(media[1], { clipPath: "inset(0 0 0 0%)", duration: 0.1, ease: "power2.inOut" }, 0.43)
+            .to(curtains[1], { scaleX: 0, duration: 0.1, ease: "power2.inOut" }, 0.43)
             .to(copies[1], { opacity: 1, y: 0, duration: 0.08, ease: "power2.out" }, 0.46)
             .to(salesLineRef.current, { scaleX: 1, duration: 0.12, ease: "power2.inOut" }, 0.55)
 
@@ -222,7 +237,16 @@ export default function Outcomes() {
                 backgroundSize: "cover",
               }}
               aria-hidden="true"
-            />
+            >
+              {act.key !== "time" && (
+                <div
+                  ref={(el) => {
+                    curtainRefs.current[i] = el;
+                  }}
+                  className="outcomes-media__curtain"
+                />
+              )}
+            </div>
             <div
               ref={(el) => {
                 copyRefs.current[i] = el;

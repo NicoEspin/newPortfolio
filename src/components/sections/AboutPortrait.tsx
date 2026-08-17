@@ -6,42 +6,70 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/motion";
 import Reveal from "@/components/Reveal";
+import AboutPortraitReveal from "@/components/sections/AboutPortraitReveal";
+import image1 from "@/assets/about/image-1.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const METADATA = [
   "Córdoba, Argentina",
   "Founder — Synttek",
-  "60+ productos entregados",
+  "60+ productos desarrollados",
   "Working worldwide",
 ];
 
+// Medido por cross-correlación de fila entre los dos JPG del retrato (misma
+// resolución, franja central de la cara): image-2 queda ~45px más arriba
+// que image-1 a resolución nativa. Con object-fit:cover el par siempre
+// queda acotado por altura en este layout (contenedores más altos, en
+// relación a su ancho, que el 1.78:1 de la foto), así que la corrección
+// escala 1:1 con containerHeight/naturalHeight.
+const ALIGN_OFFSET_NATIVE_PX = 45;
+
+const REVEAL_END = 0.72; // progreso al que la máscara ya cubre todo el cuadro
+const FRAGMENT_END = 0.32; // progreso al que el fragmento termina su reveal
+const PIN_DISTANCE = "+=180%";
+
+function diagonal(w: number, h: number) {
+  return Math.sqrt(w * w + h * h);
+}
+
 /**
  * Retrato vivo: franja angosta que se expande a foto completa por scroll
- * y se cierra hacia un lateral al salir, en flujo normal, sin sticky/pin
- * (ver docs/visual-direction.md §About) + reveal de color por proximidad
- * del cursor (desktop) o por progreso de scroll (mobile). Placeholder de
- * color en vez de foto real: ver nota de proceso en el mismo doc.
+ * y se cierra hacia un lateral al salir, en flujo normal (este timeline de
+ * ancho no pinea nada — ver docs/visual-direction.md §About).
  *
  * Un único timeline con un único ScrollTrigger de scrub controla el
  * `clip-path` — dos ScrollTrigger independientes animando la misma
  * propiedad en el mismo elemento se pisan entre sí (overwrite de GSAP),
  * dejando el mask trabado en el estado del último creado.
+ *
+ * El reveal persona→código→sistema (image-1 → image-2) es un segundo
+ * mecanismo independiente: pinea `.about-portrait-mask` (`maskRef`) mientras
+ * una máscara elíptica centrada crece hasta cubrir el cuadro, scrubbeada
+ * 1:1 con el progreso de scroll. Vive en este componente (no en
+ * AboutPortraitReveal, que es puramente presentacional) porque necesita
+ * leer `maskRef.current` de forma fiable: un layout effect en un
+ * descendiente no puede confiar en el ref de un ANCESTOR pasado por prop
+ * — React adjunta refs y corre layout effects en orden hijo→padre, así
+ * que el ref del padre todavía es `null` cuando el layout effect del hijo
+ * se ejecuta por primera vez.
  */
 export default function AboutPortrait() {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const maskRef = useRef<HTMLDivElement | null>(null);
-  const monoRef = useRef<HTMLDivElement | null>(null);
+  const portraitRootRef = useRef<HTMLDivElement | null>(null);
+  const hotRef = useRef<HTMLImageElement | null>(null);
+  const glowRef = useRef<HTMLDivElement | null>(null);
+  const fragmentRef = useRef<HTMLSpanElement | null>(null);
 
   useGSAP(
     () => {
       if (!wrapRef.current || !maskRef.current) return;
       const mask = maskRef.current;
-      const mono = monoRef.current;
 
       if (prefersReducedMotion()) {
         gsap.set(mask, { clipPath: "inset(0% 0% 0% 0%)" });
-        if (mono) gsap.set(mono, { opacity: 0 });
         return;
       }
 
@@ -68,9 +96,6 @@ export default function AboutPortrait() {
           // transit through the viewport, then hold at full width/color
           // with no tween until the exit window near the end.
           tl.to(mask, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.4, ease: "power2.out" }, 0);
-          if (mono && !desktop) {
-            tl.to(mono, { opacity: 0, duration: 0.4, ease: "power1.out" }, 0);
-          }
 
           // Exit: close toward one lateral edge over the final ~18%.
           tl.to(
@@ -90,66 +115,89 @@ export default function AboutPortrait() {
     { scope: wrapRef }
   );
 
-  // Pointer-driven radial color reveal — desktop only, local listener,
-  // never touches the global cursor dot (Cursor.tsx).
   useGSAP(
     () => {
-      const mask = maskRef.current;
-      if (!mask || prefersReducedMotion()) return;
-      if (!window.matchMedia("(pointer: fine)").matches) return;
+      const root = portraitRootRef.current;
+      const hot = hotRef.current;
+      const glow = glowRef.current;
+      const fragment = fragmentRef.current;
+      const pinTarget = maskRef.current;
+      if (!root || !hot || !glow || !fragment || !pinTarget) return;
 
-      const state = { x: 50, y: 50, r: 0 };
-      const apply = () => {
-        mask.style.setProperty("--mx", `${state.x}%`);
-        mask.style.setProperty("--my", `${state.y}%`);
-        mask.style.setProperty("--reveal-r", `${state.r}px`);
+      const applyAlignment = () => {
+        const scale = root.getBoundingClientRect().height / image1.height;
+        hot.style.transform = `translateY(${ALIGN_OFFSET_NATIVE_PX * scale}px)`;
+      };
+      applyAlignment();
+
+      if (prefersReducedMotion()) return;
+
+      const setProgress = (p: number) => {
+        const rect = root.getBoundingClientRect();
+        const diag = diagonal(rect.width, rect.height);
+        const revealT = gsap.utils.clamp(0, 1, p / REVEAL_END);
+        const rx = revealT * diag;
+        const ry = revealT * diag;
+        const cx = rect.width / 2;
+        const cy = rect.height * 0.4;
+
+        for (const el of [hot, glow]) {
+          el.style.setProperty("--rv-x", `${cx}px`);
+          el.style.setProperty("--rv-y", `${cy}px`);
+          el.style.setProperty("--rv-rx", `${rx}px`);
+          el.style.setProperty("--rv-ry", `${ry}px`);
+        }
+        glow.style.opacity = String(p < 0.5 ? p * 2 : Math.max(0, (1 - p) * 2));
+
+        const fragT = gsap.utils.clamp(0, 1, p / FRAGMENT_END);
+        fragment.style.opacity = String(gsap.utils.interpolate(0.35, 1, fragT));
+        fragment.style.transform = `translateY(${gsap.utils.interpolate(14, 0, fragT)}px)`;
       };
 
-      const moveX = gsap.quickTo(state, "x", { duration: 0.45, ease: "power3", onUpdate: apply });
-      const moveY = gsap.quickTo(state, "y", { duration: 0.45, ease: "power3", onUpdate: apply });
+      gsap.set(hot, { opacity: 1 });
+      setProgress(0);
 
-      const onMove = (e: MouseEvent) => {
-        const rect = mask.getBoundingClientRect();
-        moveX(((e.clientX - rect.left) / rect.width) * 100);
-        moveY(((e.clientY - rect.top) / rect.height) * 100);
-      };
-      const onEnter = () => gsap.to(state, { r: 160, duration: 0.4, ease: "power2.out", onUpdate: apply });
-      const onLeave = () => gsap.to(state, { r: 0, duration: 0.5, ease: "power2.in", onUpdate: apply });
+      const onResize = () => applyAlignment();
+      window.addEventListener("resize", onResize);
 
-      mask.addEventListener("mousemove", onMove);
-      mask.addEventListener("mouseenter", onEnter);
-      mask.addEventListener("mouseleave", onLeave);
+      ScrollTrigger.getById("about-portrait-reveal")?.kill();
+
+      const st = ScrollTrigger.create({
+        id: "about-portrait-reveal",
+        trigger: pinTarget,
+        start: "top top",
+        end: PIN_DISTANCE,
+        pin: true,
+        pinSpacing: true,
+        scrub: 0.4,
+        onUpdate: (self) => setProgress(self.progress),
+      });
+
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+
       return () => {
-        mask.removeEventListener("mousemove", onMove);
-        mask.removeEventListener("mouseenter", onEnter);
-        mask.removeEventListener("mouseleave", onLeave);
+        window.removeEventListener("resize", onResize);
+        st.kill();
       };
     },
-    { scope: maskRef }
+    { scope: wrapRef }
   );
 
   return (
     <>
       <div className="about-portrait-wrap" ref={wrapRef}>
-        <div
-          className="about-portrait-mask"
-          ref={maskRef}
-          role="img"
-          aria-label="Retrato editorial de Nicolás Espin — placeholder, pendiente de fotografía o video real"
-        >
-          <div className="about-portrait-color" aria-hidden="true" />
-          <div className="about-portrait-mono" ref={monoRef} aria-hidden="true" />
+        <div className="about-portrait-mask" ref={maskRef}>
+          <AboutPortraitReveal
+            rootRef={portraitRootRef}
+            hotRef={hotRef}
+            glowRef={glowRef}
+            fragmentRef={fragmentRef}
+          />
           <div className="about-portrait-overlay" aria-hidden="true" />
-          <span className="about-portrait-fragment" aria-hidden="true">
-            el criterio.
-          </span>
-          <span className="mono-label about-portrait-tag" aria-hidden="true">
-            [Reemplazar — fotografía o video editorial real de Nicolás]
-          </span>
         </div>
 
         <Reveal as="p" className="about-portrait-statement2">
-          Me interesa ese momento en el que una idea deja de ser una promesa y
+          Me interesa ese momento en el que una idea deja de ser una idea y
           empieza a funcionar.
         </Reveal>
       </div>
