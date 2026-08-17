@@ -8,12 +8,14 @@ import SplineScene from "@/components/SplineScene";
 import SplineErrorBoundary from "@/components/SplineErrorBoundary";
 import SignalCore from "@/components/SignalCore";
 import { prefersReducedMotion } from "@/lib/motion";
+import robotMobile from "@/assets/robot-mobile.webp";
 
 export default function Hero() {
   const rootRef = useRef<HTMLElement | null>(null);
   const introRef = useRef<HTMLDivElement | null>(null);
   const splineWrapRef = useRef<HTMLDivElement | null>(null);
   const [showSpline, setShowSpline] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     // Motion-safe only: the Spline scene runs on every viewport size, but
@@ -21,6 +23,17 @@ export default function Hero() {
     // asset) covers that path instead.
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () => setShowSpline(!mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    // Below 900px (same breakpoint as .hero-grid) the robot renders as a
+    // static image instead of the Spline scene — avoids loading the 3D
+    // runtime on mobile entirely, not just hiding it visually.
+    const mq = window.matchMedia("(min-width: 900px)");
+    const update = () => setIsDesktop(mq.matches);
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
@@ -203,7 +216,23 @@ export default function Hero() {
       </div>
 
       <div className="hero-right">
-        {showSpline ? (
+        {!isDesktop ? (
+          <img
+            src={robotMobile.src}
+            width={robotMobile.width}
+            height={robotMobile.height}
+            alt=""
+            aria-hidden="true"
+            draggable={false}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        ) : showSpline ? (
           <SplineErrorBoundary
             fallback={
               <div
