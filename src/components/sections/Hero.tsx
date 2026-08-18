@@ -8,7 +8,6 @@ import SplineScene from "@/components/SplineScene";
 import SplineErrorBoundary from "@/components/SplineErrorBoundary";
 import SignalCore from "@/components/SignalCore";
 import { prefersReducedMotion } from "@/lib/motion";
-import robotMobile from "@/assets/robot-mobile.webp";
 
 export default function Hero() {
   const rootRef = useRef<HTMLElement | null>(null);
@@ -217,21 +216,45 @@ export default function Hero() {
 
       <div className="hero-right">
         {!isDesktop ? (
-          <img
-            src={robotMobile.src}
-            width={robotMobile.width}
-            height={robotMobile.height}
-            alt=""
-            aria-hidden="true"
-            draggable={false}
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
+          showSpline ? (
+            <video
+              src="/robot.webm"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-hidden="true"
+              style={{
+                // The source footage is a 1920x1080 recording where the robot
+                // only occupies a light card roughly at [600,236]-[1316,1008]
+                // px, surrounded by black. object-fit:cover crops the full
+                // 16:9 frame, not that card, so the black stays visible — this
+                // instead scales/positions the video so just the card fills
+                // .hero-right, anchored to its bottom edge (robot's feet sit
+                // right at the card's bottom edge, so all the slack from the
+                // aspect-ratio mismatch is trimmed off the card's top instead).
+                position: "absolute",
+                width: "268.16vw",
+                height: "150.84vw",
+                left: "-83.8vw",
+                top: "calc(46vh - 140.78vw)",
+                maxWidth: "none",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <SignalCore />
+            </div>
+          )
         ) : showSpline ? (
           <SplineErrorBoundary
             fallback={
