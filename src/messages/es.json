@@ -40,6 +40,7 @@
     "backToWork": "← Back to Work",
     "indexLabel": "03 — PROJECT",
     "conceptDemo": "DEMO CONCEPTUAL — NO ES UN CLIENTE REAL",
+    "internalTool": "HERRAMIENTA INTERNA — SIN DEMO PÚBLICA",
     "detailsLabels": {
       "problem": "PROBLEMA",
       "solution": "SOLUCIÓN",
@@ -148,6 +149,12 @@
       "problem": "Muchos hoteles dependen de plataformas intermediarias y pierden marca en sitios funcionales pero indiferenciados.",
       "solution": "Landing cinematográfica con parallax, métricas animadas y disponibilidad orientada a reserva directa por WhatsApp — demo conceptual, no un sistema de reservas real.",
       "result": "Pieza de dirección visual: cursor custom, parallax y contadores con GSAP/ScrollTrigger, con soporte completo de reduced motion."
+    },
+    "synttek-leads-engine": {
+      "category": "SaaS interno · Lead generation & CRM",
+      "problem": "La prospección manual desde Google Maps significaba buscar negocio por negocio, copiar datos de contacto a mano y perder trazabilidad del seguimiento comercial.",
+      "solution": "Plataforma full-stack que descubre negocios locales vía Google Places, los enriquece con scraping estático y Playwright para hallar WhatsApp e Instagram, calcula un score comercial y organiza todo en un CRM con vistas Kanban y lista.",
+      "result": "MVP funcional que centraliza descubrimiento, priorización y seguimiento comercial en un único flujo, reemplazando un proceso manual y fragmentado por un pipeline estructurado y reutilizable."
     }
   },
   "experienceEntries": {

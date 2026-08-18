@@ -30,6 +30,11 @@ import hotelGallery1 from "@/assets/projects/hotel-california/gallery-1.webp";
 import hotelGallery2 from "@/assets/projects/hotel-california/gallery-2.webp";
 import hotelGallery3 from "@/assets/projects/hotel-california/gallery-3.webp";
 
+import leadsEngineHero from "@/assets/projects/synttek-leads-engine/hero.webp";
+import leadsEngineGallery1 from "@/assets/projects/synttek-leads-engine/gallery-1.webp";
+import leadsEngineGallery2 from "@/assets/projects/synttek-leads-engine/gallery-2.webp";
+import leadsEngineGallery3 from "@/assets/projects/synttek-leads-engine/gallery-3.webp";
+
 export type ProjectType = "SaaS" | "Web Experience" | "Concept";
 
 export type Project = {
@@ -41,7 +46,7 @@ export type Project = {
   status: "live" | "production" | "concept";
   role: string;
   stack: string[];
-  demoUrl: string;
+  demoUrl?: string;
   heroImage: StaticImageData;
   gallery: StaticImageData[];
   video?: string;
@@ -132,6 +137,19 @@ export const projects: Project[] = [
     heroImage: hotelHero,
     gallery: [hotelGallery1, hotelGallery2, hotelGallery3],
     video: "/projects/hotel-california/demo.webm",
+  },
+  {
+    slug: "synttek-leads-engine",
+    index: "07",
+    name: "Synttek Leads Engine",
+    type: "SaaS",
+    year: "2026",
+    status: "production",
+    role: "Full-Stack Developer · Product Architecture",
+    stack: ["Next.js", "TypeScript", "Express", "PostgreSQL", "Supabase", "Playwright", "Zod"],
+    heroImage: leadsEngineHero,
+    gallery: [leadsEngineGallery1, leadsEngineGallery2, leadsEngineGallery3],
+    video: "/projects/synttek-leads-engine/demo.webm",
   },
 ];
 

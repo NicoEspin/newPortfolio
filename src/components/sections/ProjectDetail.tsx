@@ -78,6 +78,11 @@ export default function ProjectDetail({ project, next }: { project: Project; nex
                 {t("workDetail.conceptDemo")}
               </p>
             )}
+            {!project.demoUrl && project.status !== "concept" && (
+              <p className="mono-label" style={{ color: "var(--color-steel)", marginTop: 10 }}>
+                {t("workDetail.internalTool")}
+              </p>
+            )}
           </div>
           <div className="mono-label" style={{ color: "var(--color-steel)", textAlign: "right" }}>
             {project.year}
@@ -182,22 +187,24 @@ export default function ProjectDetail({ project, next }: { project: Project; nex
           </div>
         )}
 
-        <div style={{ marginTop: 40, display: "flex", justifyContent: "flex-end" }}>
-          <a
-            href={project.demoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cursor-hover
-            className="mono-label"
-            style={{
-              color: "var(--color-signal)",
-              borderBottom: "1px solid var(--color-signal)",
-              paddingBottom: 4,
-            }}
-          >
-            {t("workDetail.viewLiveSite")}
-          </a>
-        </div>
+        {project.demoUrl && (
+          <div style={{ marginTop: 40, display: "flex", justifyContent: "flex-end" }}>
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor-hover
+              className="mono-label"
+              style={{
+                color: "var(--color-signal)",
+                borderBottom: "1px solid var(--color-signal)",
+                paddingBottom: 4,
+              }}
+            >
+              {t("workDetail.viewLiveSite")}
+            </a>
+          </div>
+        )}
 
         <div
           style={{

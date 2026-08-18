@@ -177,6 +177,17 @@ Nota de proceso: página nueva, pedida por Nicolás para separar "vista completa
 
 5. **Cards: recorte duro `aspect-ratio:4/3`, sin card/sombra/radio — coherente con todo el sistema.** Overlay de índice (`01`–`06`) y status badge superpuestos en las esquinas superiores sobre un fondo `rgba(void,0.55)` para legibilidad garantizada sobre cualquier imagen — mismo mecanismo que el índice de la galería del detail page (punto 5 de la sección anterior). Único hover: `scale(1.04)` en la imagen (`transition` 0.6s `--ease-signal`) — nunca eleva la card ni agrega sombra, para no introducir el lenguaje de "card flotante" que el sistema evita en todas partes.
 
+---
+
+## Séptimo proyecto: Synttek Leads Engine — herramienta interna sin demo pública
+
+Nota de proceso: primer proyecto del set sin `demoUrl` (herramienta interna de Synttek, no publicada a propósito). No introduce composición nueva — reutiliza el mismo tratamiento del punto 3/7 de arriba (nota `mono-label` bajo el `<h1>`, CTA final condicional) para un caso que el sistema no había cubierto todavía.
+
+1. **`demoUrl` pasa a opcional en `Project`.** El CTA "Ver sitio en vivo ↗" (punto 7 arriba) ahora solo se renderiza `{project.demoUrl && (...)}` — en vez de introducir un estado de status nuevo (`internal`) que hubiera forzado tocar `WorkRow`/`WorkIndex`/las traducciones de `common.status`, se resolvió a nivel de dato: `status` sigue describiendo vigencia (`live`/`production`/`concept`), `demoUrl` describe si hay algo público para linkear. Son ejes independientes.
+2. **Nueva nota `mono-label` "HERRAMIENTA INTERNA — SIN DEMO PÚBLICA"**, mismo lugar y mismo tratamiento visual que la nota `DEMO CONCEPTUAL` del punto 3 (bajo el `<h1>`, `--color-steel`, nunca signal) pero con condición distinta y mutuamente excluyente: se muestra cuando `!project.demoUrl && status !== "concept"` (los conceptuales ya tienen su propia nota; no se acumulan dos notas en el mismo proyecto).
+3. **Status asignado: `production`.** Es una plataforma full-stack real, con datos reales de Synttek, en uso activo — no es una demo con datos de ejemplo (`concept`), aunque tampoco tiene URL pública (`live`). `production` ya significaba "en producción" sin implicar demo pública (ver Constructora SaaS, que si la tiene) — no se fuerza un cuarto status para esto.
+4. **Video de demo (`public/projects/synttek-leads-engine/demo.webm`) sigue el mismo mecanismo del punto 6 de arriba** — nombre normalizado a `demo.webm` (Nicolás lo entregó como `Demo-Leads-Engine.webm`) para mantener la convención `public/projects/<slug>/demo.webm` sin excepciones caso por caso.
+
 6. **Filtrado: fade+slide de entrada por cada cambio de filtro, vía `useGSAP` con `dependencies:[filter]`, no un layout animado (FLIP).** Al cambiar de filtro, React ya recalculó qué cards quedan en el DOM antes de que el efecto corra — el efecto solo anima la entrada (`opacity 0→1, y 16→0`, stagger 0.05s) de la nueva lista resultante. Se descartó FLIP (medir posición antes/después y animar la transición) por ser complejidad innecesaria para un filtro de 6 ítems como mucho — el fade+slide ya comunica "esto cambió" sin el costo de medir layouts. Respeta `prefers-reduced-motion` (sin animación, el nuevo set aparece directo).
 
 7. **Header de página: mismo patrón mono-label + heading grande que ya usa `work/[slug]`** (`{count} PROYECTOS` en vez de `03 — PROJECT`, `Todo el trabajo.` en vez del nombre del proyecto) — coherencia visual entre las dos páginas del namespace `/work`, sin inventar un tercer patrón de cabecera.
