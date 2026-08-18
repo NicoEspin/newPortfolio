@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/motion";
 import Reveal from "@/components/Reveal";
@@ -10,13 +11,6 @@ import AboutPortraitReveal from "@/components/sections/AboutPortraitReveal";
 import image1 from "@/assets/about/image-1.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const METADATA = [
-  "Córdoba, Argentina",
-  "Founder — Synttek",
-  "60+ productos desarrollados",
-  "Working worldwide",
-];
 
 // Medido por cross-correlación de fila entre los dos JPG del retrato (misma
 // resolución, franja central de la cara): image-2 queda ~45px más arriba
@@ -56,6 +50,13 @@ function diagonal(w: number, h: number) {
  * se ejecuta por primera vez.
  */
 export default function AboutPortrait() {
+  const t = useTranslations("about");
+  const METADATA = [
+    t("metadata.location"),
+    t("metadata.founder"),
+    t("metadata.products"),
+    t("metadata.worldwide"),
+  ];
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const maskRef = useRef<HTMLDivElement | null>(null);
   const portraitRootRef = useRef<HTMLDivElement | null>(null);
@@ -197,20 +198,18 @@ export default function AboutPortrait() {
         </div>
 
         <Reveal as="p" className="about-portrait-statement2">
-          Me interesa ese momento en el que una idea deja de ser una idea y
-          empieza a funcionar.
+          {t("quote")}
         </Reveal>
       </div>
 
       <div className="about-copy">
         <Reveal as="p" className="about-copy__block reading-measure">
-          Soy Nicolás, desarrollador full-stack y fundador de{" "}
-          <span className="ne-infrared">Synttek</span>.
+          {t.rich("bio", {
+            infrared: (chunks) => <span className="ne-infrared">{chunks}</span>,
+          })}
         </Reveal>
         <Reveal as="p" className="about-copy__block reading-measure" delay={0.08}>
-          Trabajo en el punto donde producto, interacción y negocio dejan de
-          ser disciplinas separadas y empiezan a funcionar como una sola
-          experiencia.
+          {t("closing")}
         </Reveal>
       </div>
 

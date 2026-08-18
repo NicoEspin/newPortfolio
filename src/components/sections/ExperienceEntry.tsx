@@ -1,10 +1,13 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { ExperienceEntry as ExperienceEntryData } from "@/lib/experience";
 import SignalLink from "@/components/SignalLink";
 
 /**
- * A single career-signal row. Pure content — active/past/future state and
- * the moving track node are applied by the parent (ExperienceTrack) via
- * data-state on the <li>, so this stays a plain server-renderable row.
+ * A single career-signal row. Content-only otherwise — active/past/future
+ * state and the moving track node are applied by the parent
+ * (ExperienceTrack) via data-state on the <li>.
  */
 export default function ExperienceEntry({
   entry,
@@ -17,6 +20,8 @@ export default function ExperienceEntry({
   markerRef: (el: HTMLSpanElement | null) => void;
   initialState: "active" | "past" | "future";
 }) {
+  const t = useTranslations("experience");
+  const tEntries = useTranslations("experienceEntries");
   return (
     <li
       ref={rowRef}
@@ -37,7 +42,9 @@ export default function ExperienceEntry({
 
       <h3 className="experience-row__role">{entry.role}</h3>
       <p className="experience-row__org">{entry.company}</p>
-      <p className="experience-row__desc reading-measure">{entry.description}</p>
+      <p className="experience-row__desc reading-measure">
+        {tEntries(`${entry.index}.description`)}
+      </p>
 
       {entry.technologies.length > 0 && (
         <span className="mono-label experience-row__focus">{entry.technologies.join(" · ")}</span>
@@ -50,7 +57,7 @@ export default function ExperienceEntry({
           className="experience-row__link"
           data-cursor-hover
         >
-          Ver proyecto relacionado →
+          {t("viewRelatedProject")}
         </SignalLink>
       )}
     </li>

@@ -1,9 +1,13 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { projects } from "@/lib/projects";
 import Reveal from "@/components/Reveal";
 import WorkRow from "@/components/sections/WorkRow";
 import SignalLink from "@/components/SignalLink";
 
 export default function SelectedWork() {
+  const t = useTranslations("selectedWork");
   return (
     <section
       id="work"
@@ -50,7 +54,7 @@ export default function SelectedWork() {
               paddingBottom: 6,
             }}
           >
-            VER TODOS LOS PROYECTOS →
+            {t("viewAll")}
           </SignalLink>
         </div>
       </Reveal>

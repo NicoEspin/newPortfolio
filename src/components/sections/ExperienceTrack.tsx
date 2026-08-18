@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { ExperienceEntry as ExperienceEntryData } from "@/lib/experience";
 import ExperienceEntry from "@/components/sections/ExperienceEntry";
@@ -17,6 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
  * Reduced motion: the node parks at the first (active) entry, no scrub.
  */
 export default function ExperienceTrack({ entries }: { entries: ExperienceEntryData[] }) {
+  const t = useTranslations("experience");
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const dotRef = useRef<HTMLSpanElement | null>(null);
   const rowRefs = useRef<Array<HTMLLIElement | null>>([]);
@@ -80,7 +82,7 @@ export default function ExperienceTrack({ entries }: { entries: ExperienceEntryD
     <div ref={wrapRef} className="experience-track">
       <span className="experience-line" aria-hidden="true" />
       <span ref={dotRef} className="experience-dot" aria-hidden="true" />
-      <ol aria-label="Trayectoria profesional" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+      <ol aria-label={t("trackAria")} style={{ listStyle: "none", margin: 0, padding: 0 }}>
         {entries.map((entry, i) => (
           <ExperienceEntry
             key={entry.index}

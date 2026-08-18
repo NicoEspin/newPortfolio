@@ -5,7 +5,9 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Logo from "@/components/Logo";
+import LocaleSwitch from "@/components/LocaleSwitch";
 
 const LINKS = [
   { href: "/work", label: "Work" },
@@ -21,6 +23,7 @@ const SOCIALS = [
 ];
 
 export default function Nav() {
+  const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const firstLinkRef = useRef<HTMLAnchorElement | null>(null);
@@ -99,46 +102,52 @@ export default function Nav() {
           color: "var(--color-paper)",
         }}
       >
-        <Link href="/" aria-label="NE. — Inicio" style={{ display: "inline-flex" }}>
+        <Link href="/" aria-label={t("logoAria")} style={{ display: "inline-flex" }}>
           <Logo style={{ height: 22, width: "auto" }} />
         </Link>
 
-        <nav aria-label="Navegación principal" className="hidden-mobile">
-          <ul style={{ display: "flex", gap: 28, listStyle: "none", margin: 0, padding: 0 }}>
-            {LINKS.map((l) => (
-              <li key={l.href}>
-                <Link
-                  href={sectionHref(l.href)}
-                  className="mono-label"
-                  style={{ fontSize: "0.75rem" }}
-                >
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <div className="hidden-mobile nav-desktop-group">
+          <nav aria-label={t("mainNavAria")}>
+            <ul style={{ display: "flex", gap: 28, listStyle: "none", margin: 0, padding: 0 }}>
+              {LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={sectionHref(l.href)}
+                    className="mono-label"
+                    style={{ fontSize: "0.75rem" }}
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? "Cerrar menú" : "Abrir menú"}
-          className="show-mobile"
-          style={{
-            background: "none",
-            border: "none",
-            color: "inherit",
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
-            letterSpacing: "0.06em",
-            cursor: "pointer",
-            padding: 8,
-          }}
-        >
-          {open ? "CLOSE" : "MENU"}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <LocaleSwitch />
+
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={open ? t("closeMenuAria") : t("openMenuAria")}
+            className="show-mobile"
+            style={{
+              background: "none",
+              border: "none",
+              color: "inherit",
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.75rem",
+              letterSpacing: "0.06em",
+              cursor: "pointer",
+              padding: 8,
+            }}
+          >
+            {open ? "CLOSE" : "MENU"}
+          </button>
+        </div>
       </div>
 
       <div

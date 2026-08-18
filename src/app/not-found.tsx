@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function NotFound() {
+  const t = useTranslations("notFound");
   return (
     <div
       style={{
@@ -16,7 +20,7 @@ export default function NotFound() {
       }}
     >
       <span className="mono-label" style={{ color: "var(--color-steel)" }}>
-        404 — SEÑAL PERDIDA
+        {t("label")}
       </span>
       <div
         aria-hidden="true"
@@ -36,13 +40,13 @@ export default function NotFound() {
           marginBottom: 24,
         }}
       >
-        Esta página no existe.
+        {t("heading")}
       </h1>
       <Link
         href="/"
         style={{ borderBottom: "1px solid var(--color-paper)", paddingBottom: 4 }}
       >
-        Volver al inicio
+        {t("backHome")}
       </Link>
     </div>
   );

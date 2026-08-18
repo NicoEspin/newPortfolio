@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import type { Application } from "@splinetool/runtime";
 import SplineScene from "@/components/SplineScene";
 import SplineErrorBoundary from "@/components/SplineErrorBoundary";
@@ -10,6 +11,7 @@ import SignalCore from "@/components/SignalCore";
 import { prefersReducedMotion } from "@/lib/motion";
 
 export default function Hero() {
+  const t = useTranslations("hero");
   const rootRef = useRef<HTMLElement | null>(null);
   const introRef = useRef<HTMLDivElement | null>(null);
   const splineWrapRef = useRef<HTMLDivElement | null>(null);
@@ -143,7 +145,7 @@ export default function Hero() {
   return (
     <section
       ref={rootRef}
-      aria-label="Hero"
+      aria-label={t("ariaLabel")}
       className="hero-grid"
       style={{
         background: "var(--color-void)",
@@ -183,19 +185,20 @@ export default function Hero() {
           </p>
 
           <p className="hero-positioning reading-measure" data-hero-positioning>
-            Diseño y desarrollo productos digitales desde la interfaz hasta la
-            infraestructura{" "}
-            <em
-              style={{
-                fontFamily: "var(--font-editorial)",
-                fontStyle: "italic",
-                fontWeight: 400,
-                color: "var(--color-signal-soft)",
-              }}
-            >
-              con criterio
-            </em>
-            .
+            {t.rich("positioning", {
+              em: (chunks) => (
+                <em
+                  style={{
+                    fontFamily: "var(--font-editorial)",
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                    color: "var(--color-signal-soft)",
+                  }}
+                >
+                  {chunks}
+                </em>
+              ),
+            })}
           </p>
 
           <div className="hero-meta">
@@ -280,6 +283,24 @@ export default function Hero() {
             <div ref={splineWrapRef} className="hero-spline-overscan">
               <SplineScene onLoad={handleSplineLoad} />
             </div>
+            {/* Covers the "Built with Spline" watermark on the free-plan
+                scene. #E3E3E3 matches the scene's own render background in
+                that corner (not a brand token) — removing the badge outright
+                is Spline's paid feature, this just sits visually above the
+                render. Lives inside the overscan wrapper so it tracks the
+                parallax and never uncovers a sliver of the badge. */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+                width: 170,
+                height: 56,
+                background: "#E3E3E3",
+                zIndex: 2,
+              }}
+            />
           </SplineErrorBoundary>
         ) : (
           <div

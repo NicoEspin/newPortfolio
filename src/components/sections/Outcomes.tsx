@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ordenImage from "@/assets/outcomes/orden.jpg";
 import tiempoImage from "@/assets/outcomes/tiempo.webp";
@@ -13,8 +14,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 type Act = {
   key: "order" | "sales" | "time";
-  heading: React.ReactNode;
-  sub: React.ReactNode;
   tags: string;
 };
 
@@ -25,54 +24,9 @@ const OUTCOME_MEDIA = {
 } as const;
 
 const ACTS: Act[] = [
-  {
-    key: "order",
-    heading: (
-      <>
-        Construyo <em className="outcomes-em outcomes-em--accent">orden</em>.
-      </>
-    ),
-    sub: (
-      <>
-        Software que transforma
-        <br />
-        complejidad en control.
-      </>
-    ),
-    tags: "CUSTOM SOFTWARE · SYSTEM DESIGN · OPERATIONS",
-  },
-  {
-    key: "sales",
-    heading: (
-      <>
-        Construyo <em className="outcomes-em outcomes-em--accent">ventas</em>.
-      </>
-    ),
-    sub: (
-      <>
-        Sitios que convierten
-        <br />
-        atención en acción.
-      </>
-    ),
-    tags: "WEB EXPERIENCE · CONVERSION · POSITIONING",
-  },
-  {
-    key: "time",
-    heading: (
-      <>
-        Construyo <em className="outcomes-em outcomes-em--time">tiempo</em>.
-      </>
-    ),
-    sub: (
-      <>
-        Agentes de IA que se ocupan
-        <br />
-        de lo repetitivo.
-      </>
-    ),
-    tags: "AI AGENTS · AUTOMATION · ALWAYS RUNNING",
-  },
+  { key: "order", tags: "CUSTOM SOFTWARE · SYSTEM DESIGN · OPERATIONS" },
+  { key: "sales", tags: "WEB EXPERIENCE · CONVERSION · POSITIONING" },
+  { key: "time", tags: "AI AGENTS · AUTOMATION · ALWAYS RUNNING" },
 ];
 
 /**
@@ -83,6 +37,7 @@ const ACTS: Act[] = [
  * composition instead of four discrete slides.
  */
 export default function Outcomes() {
+  const t = useTranslations("outcomes");
   const wrapRef = useRef<HTMLElement | null>(null);
   const act1Ref = useRef<HTMLDivElement | null>(null);
   const premiseRef = useRef<HTMLSpanElement | null>(null);
@@ -200,19 +155,24 @@ export default function Outcomes() {
   );
 
   return (
-    <section id="outcomes" aria-label="Qué construyo" ref={wrapRef} className="outcomes-story">
+    <section id="outcomes" aria-label={t("ariaLabel")} ref={wrapRef} className="outcomes-story">
       <div className="outcomes-story__sticky">
         <div ref={act1Ref} className="outcomes-act outcomes-act--intro">
           <h2 className="outcomes-act1__statement-wrap">
             <span ref={premiseRef} className="outcomes-act1__premise">
-              No construyo{" "}
-              <span ref={sistemasRef} className="outcomes-act1__sistemas">
-                sistemas
-              </span>
-              .
+              {t.rich("intro.premise", {
+                sistemas: (chunks) => (
+                  <span ref={sistemasRef} className="outcomes-act1__sistemas">
+                    {chunks}
+                  </span>
+                ),
+              })}
             </span>
             <span ref={statementRef} className="outcomes-act1__statement">
-              Construyo lo que <em className="outcomes-em">hacen <span className="ne-infrared">posible</span></em>.
+              {t.rich("intro.statement", {
+                em: (chunks) => <em className="outcomes-em">{chunks}</em>,
+                infrared: (chunks) => <span className="ne-infrared">{chunks}</span>,
+              })}
             </span>
           </h2>
         </div>
@@ -253,8 +213,22 @@ export default function Outcomes() {
               }}
               className="outcomes-copy"
             >
-              <h3 className="outcomes-copy__heading">{act.heading}</h3>
-              <p className="outcomes-copy__sub">{act.sub}</p>
+              <h3 className="outcomes-copy__heading">
+                {t.rich(`acts.${act.key}.heading`, {
+                  em: (chunks) => (
+                    <em
+                      className={`outcomes-em ${
+                        act.key === "time" ? "outcomes-em--time" : "outcomes-em--accent"
+                      }`}
+                    >
+                      {chunks}
+                    </em>
+                  ),
+                })}
+              </h3>
+              <p className="outcomes-copy__sub">
+                {t.rich(`acts.${act.key}.sub`, { br: () => <br /> })}
+              </p>
               {act.key === "sales" && (
                 <span ref={salesLineRef} className="outcomes-sales-line" aria-hidden="true" />
               )}

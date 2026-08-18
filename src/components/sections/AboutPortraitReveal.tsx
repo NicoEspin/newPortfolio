@@ -1,6 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
+import { useTranslations } from "next-intl";
 import image1 from "@/assets/about/image-1.jpg";
 import image2 from "@/assets/about/image-2.jpg";
 
@@ -25,13 +26,14 @@ export default function AboutPortraitReveal({
   glowRef: RefObject<HTMLDivElement | null>;
   fragmentRef: RefObject<HTMLSpanElement | null>;
 }) {
+  const t = useTranslations("about");
   return (
     <div className="portrait-reveal" ref={rootRef}>
       <img
         src={image1.src}
         width={image1.width}
         height={image1.height}
-        alt="Retrato de Nicolás Espin"
+        alt={t("portraitAlt")}
         className="portrait-reveal__img portrait-reveal__img--base"
         draggable={false}
       />
@@ -47,7 +49,7 @@ export default function AboutPortraitReveal({
       />
       <div ref={glowRef} className="portrait-reveal__glow" aria-hidden="true" />
       <span ref={fragmentRef} className="about-portrait-fragment" aria-hidden="true">
-        innovación.
+        {t("fragmentWord")}
       </span>
     </div>
   );

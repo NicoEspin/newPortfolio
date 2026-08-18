@@ -1,0 +1,170 @@
+{
+  "layout": {
+    "description": "Nicolás Espin — creative full-stack developer y fundador de Synttek. Córdoba, Argentina. Sistemas controlados, experiencias vivas.",
+    "ogLocale": "es_AR"
+  },
+  "common": {
+    "skipLink": "Saltar al contenido",
+    "status": {
+      "live": "● LIVE",
+      "production": "● IN PRODUCTION",
+      "concept": "○ CONCEPT DEMO"
+    }
+  },
+  "nav": {
+    "logoAria": "NE. — Inicio",
+    "mainNavAria": "Navegación principal",
+    "openMenuAria": "Abrir menú",
+    "closeMenuAria": "Cerrar menú",
+    "switchToEnglish": "Cambiar a inglés",
+    "switchToSpanish": "Cambiar a español"
+  },
+  "hero": {
+    "ariaLabel": "Hero",
+    "positioning": "Diseño y desarrollo productos digitales desde la interfaz hasta la infraestructura <em>con criterio</em>."
+  },
+  "selectedWork": {
+    "ariaLabel": "Selected Work",
+    "viewAll": "VER TODOS LOS PROYECTOS →"
+  },
+  "workIndex": {
+    "filtersAria": "Filtrar proyectos por tipo",
+    "filterAll": "TODOS",
+    "backHome": "← Home",
+    "count": "{count} PROYECTOS",
+    "title": "Todo el trabajo.",
+    "metaTitle": "Work — NE.",
+    "metaDescription": "Todos los proyectos de Nicolás Espin: SaaS, web experiences y demos conceptuales, filtrables por tipo."
+  },
+  "workDetail": {
+    "backToWork": "← Back to Work",
+    "indexLabel": "03 — PROJECT",
+    "conceptDemo": "DEMO CONCEPTUAL — NO ES UN CLIENTE REAL",
+    "detailsLabels": {
+      "problem": "PROBLEMA",
+      "solution": "SOLUCIÓN",
+      "roleStack": "ROL / STACK",
+      "result": "RESULTADO"
+    },
+    "nextProject": "NEXT PROJECT",
+    "viewLiveSite": "VER SITIO EN VIVO ↗",
+    "videoDemoAlt": "Demo en video de {name}",
+    "heroImageAlt": "Captura de {name}",
+    "galleryImageAlt": "Captura {index} de {name}"
+  },
+  "outcomes": {
+    "ariaLabel": "Qué construyo",
+    "intro": {
+      "premise": "No construyo <sistemas>sistemas</sistemas>.",
+      "statement": "Construyo lo que <em>hacen <infrared>posible</infrared></em>."
+    },
+    "acts": {
+      "order": {
+        "heading": "Construyo <em>orden</em>.",
+        "sub": "Software que transforma<br></br>complejidad en control."
+      },
+      "sales": {
+        "heading": "Construyo <em>ventas</em>.",
+        "sub": "Sitios que convierten<br></br>atención en acción."
+      },
+      "time": {
+        "heading": "Construyo <em>tiempo</em>.",
+        "sub": "Agentes de IA que se ocupan<br></br>de lo repetitivo."
+      }
+    }
+  },
+  "experience": {
+    "ariaLabel": "Experience",
+    "label": "EXPERIENCE",
+    "paragraph": "Una trayectoria hecha de productos lanzados, sistemas internos y decisiones que tuvieron que funcionar fuera del portfolio.",
+    "trackAria": "Trayectoria profesional",
+    "viewRelatedProject": "Ver proyecto relacionado →"
+  },
+  "about": {
+    "ariaLabel": "About",
+    "label": "About",
+    "name": "Nicolás Espin",
+    "line1": "El código es el medio.",
+    "line2": "El criterio es el trabajo.",
+    "portraitAlt": "Retrato de Nicolás Espin",
+    "fragmentWord": "innovación.",
+    "metadata": {
+      "location": "Córdoba, Argentina",
+      "founder": "Founder — Synttek",
+      "products": "60+ productos desarrollados",
+      "worldwide": "Working worldwide"
+    },
+    "quote": "Me interesa ese momento en el que una idea deja de ser una idea y empieza a funcionar.",
+    "bio": "Soy Nicolás, desarrollador full-stack y fundador de <infrared>Synttek</infrared>.",
+    "closing": "Trabajo en el punto donde producto, interacción y negocio dejan de ser disciplinas separadas y empiezan a funcionar como una sola experiencia."
+  },
+  "contact": {
+    "heading": "Innovemos <em>Juntos</em>.",
+    "emailAria": "Escribir a {email}"
+  },
+  "notFound": {
+    "label": "404 — SEÑAL PERDIDA",
+    "heading": "Esta página no existe.",
+    "backHome": "Volver al inicio"
+  },
+  "error": {
+    "label": "SEÑAL INTERRUMPIDA",
+    "heading": "Algo se rompió del lado del sistema.",
+    "retry": "Reintentar"
+  },
+  "projects": {
+    "constructora-saas": {
+      "category": "SaaS B2B · Software a medida",
+      "problem": "Las constructoras distribuyen obras, presupuestos y materiales entre planillas y chats que no se comunican entre sí, perdiendo de vista el costo real de cada obra.",
+      "solution": "Backoffice multi-tenant con aislamiento real por organización: obras, presupuestos, gastos e inventario con movimientos reversibles y reporting, todo bajo roles y permisos validados en la API.",
+      "result": "Sistema completo en producción, con pruebas de aislamiento entre tenants y trazabilidad de cada movimiento de stock — no un CRUD con login encima."
+    },
+    "thumblify": {
+      "category": "AI SaaS · Producto digital",
+      "problem": "Producir thumbnails de YouTube consistentes exige tiempo e iteración, y los generadores de imagen genéricos no entienden el formato ni la legibilidad que pide la plataforma.",
+      "solution": "Flujo guiado que traduce título, estilo, esquema de color y hasta dos imágenes de referencia en un prompt multimodal generado con Gemini, organizado en galería personal o comunidad pública.",
+      "result": "Producto end-to-end en vivo: autenticación, generación, galería privada y comunidad pública funcionando con polling en tiempo real, en español e inglés."
+    },
+    "ranch": {
+      "category": "Web Experience · Gastronomía",
+      "problem": "Las cartas en PDF o imagen se desactualizan y obligan al cliente a reconstruir su pedido a mano dentro de WhatsApp.",
+      "solution": "Carta digital por categorías con armado de pedido, personalización por ingredientes y generación automática del mensaje de WhatsApp con sucursal, entrega y detalle completo.",
+      "result": "Experiencia mobile-first en vivo, con reservas para dos sucursales y un pedido que llega a WhatsApp ya formateado, sin fricción de cuentas ni apps."
+    },
+    "synttek": {
+      "category": "Brand Platform · Web Development",
+      "problem": "Una agencia multidisciplinaria necesita explicar qué hace, mostrar trabajo real y generar consultas sin depender solo de redes sociales.",
+      "solution": "Plataforma bilingüe con páginas de servicio, casos de estudio, blog, landings locales y un asistente conversacional en streaming que prepara el traspaso del lead a WhatsApp.",
+      "result": "Plataforma comercial propia en producción, con SEO técnico completo (hreflang, sitemap, datos estructurados) y un chatbot funcionando sobre eventos SSE."
+    },
+    "viajes-cordoba": {
+      "category": "Concept Web Experience · Turismo",
+      "problem": "Las agencias de turismo suelen mostrar destinos como listas intercambiables, sin transmitir criterio ni conocimiento real del territorio.",
+      "solution": "Catálogo editorial de seis circuitos filtrables por duración y perfil, con itinerarios día por día y consulta directa por WhatsApp — demo conceptual, no un cliente real.",
+      "result": "Pieza de exploración de dirección editorial: navegación por rutas reales, scroll progress y soporte de reduced motion, con datos de ejemplo."
+    },
+    "hotel-california": {
+      "category": "Concept Landing Page · Hospitality",
+      "problem": "Muchos hoteles dependen de plataformas intermediarias y pierden marca en sitios funcionales pero indiferenciados.",
+      "solution": "Landing cinematográfica con parallax, métricas animadas y disponibilidad orientada a reserva directa por WhatsApp — demo conceptual, no un sistema de reservas real.",
+      "result": "Pieza de dirección visual: cursor custom, parallax y contadores con GSAP/ScrollTrigger, con soporte completo de reduced motion."
+    }
+  },
+  "experienceEntries": {
+    "01": {
+      "description": "Fundé y dirijo Synttek, un estudio digital desde el que diseño y desarrollo productos, sitios, sistemas internos y automatizaciones de punta a punta. Lideré más de 60 entregas, conectando estrategia, experiencia, código e infraestructura para convertir necesidades de negocio en soluciones listas para producción."
+    },
+    "02": {
+      "description": "Lideré la migración desde Django Templates hacia Next.js, TypeScript y Redux, estableciendo patrones adoptados por todo el equipo. Construí un sistema de diseño con más de 600 componentes que redujo aproximadamente un 30% el tiempo de desarrollo, mejoré el rendimiento del producto y diseñé flujos con agentes de IA para automatizar procesos de reclutamiento."
+    },
+    "03": {
+      "description": "Desarrollé y entregué un MVP listo para producción en tres meses, permitiendo validar el modelo de negocio con usuarios reales. Diseñé una arquitectura de datos para más de 10.000 registros, integré APIs externas y transformé los diseños de Figma en una experiencia responsive y pixel-perfect."
+    },
+    "04": {
+      "description": "Desarrollé más de cinco soluciones WordPress a medida y optimicé su arquitectura, caché e imágenes para reducir los tiempos de carga aproximadamente un 50%. Combiné desarrollo mobile-first, SEO técnico y soporte continuo, manteniendo una tasa de retención de clientes del 100%."
+    },
+    "05": {
+      "description": "Diseñé y publiqué aplicaciones full stack con el stack MERN, incorporando APIs REST, autenticación JWT y funcionalidades en tiempo real con Socket.io. Gestioné el ciclo completo de cada producto, desde la definición y arquitectura hasta el despliegue mediante CI/CD e infraestructura cloud."
+    }
+  }
+}

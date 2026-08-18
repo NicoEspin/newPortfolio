@@ -1143,6 +1143,12 @@ a {
   display: none;
 }
 
+.nav-desktop-group {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
 @media (max-width: 767px) {
   .hidden-mobile {
     display: none;

@@ -9,6 +9,9 @@ import Loader from "@/components/Loader";
 import PageTransition from "@/components/PageTransition";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import SkipLink from "@/components/SkipLink";
+import LocaleProvider from "@/components/providers/LocaleProvider";
+import { getServerMessages } from "@/lib/i18n-server";
 import {
   DesktopSmoothScroll,
   FinePointerCursor,
@@ -36,44 +39,48 @@ const plexMono = IBM_Plex_Mono({
 });
 
 const title = "NE. — Nicolás Espin, Creative Full-Stack Developer";
-const description =
-  "Nicolás Espin — creative full-stack developer y fundador de Synttek. Córdoba, Argentina. Sistemas controlados, experiencias vivas.";
 
-export const metadata: Metadata = {
-  title,
-  description,
-  openGraph: {
+export async function generateMetadata(): Promise<Metadata> {
+  const { messages } = await getServerMessages();
+  const description = messages.layout.description;
+  return {
     title,
     description,
-    type: "website",
-    locale: "es_AR",
-  },
-  twitter: {
-    card: "summary",
-    title,
-    description,
-  },
-};
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: messages.layout.ogLocale,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+  };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const { locale } = await getServerMessages();
+
   return (
     <html
-      lang="es"
+      lang={locale}
       className={`${bricolage.variable} ${instrument.variable} ${plexMono.variable}`}
     >
       <body>
-        <a href="#main" className="skip-link">
-          Saltar al contenido
-        </a>
-        <Loader />
-        <FinePointerCursor />
-        <PageTransition>
-          <DesktopSmoothScroll>
-            <Nav />
-            <main id="main">{children}</main>
-            <Footer />
-          </DesktopSmoothScroll>
-        </PageTransition>
+        <LocaleProvider initialLocale={locale}>
+          <SkipLink />
+          <Loader />
+          <FinePointerCursor />
+          <PageTransition>
+            <DesktopSmoothScroll>
+              <Nav />
+              <main id="main">{children}</main>
+              <Footer />
+            </DesktopSmoothScroll>
+          </PageTransition>
+        </LocaleProvider>
       </body>
     </html>
   );

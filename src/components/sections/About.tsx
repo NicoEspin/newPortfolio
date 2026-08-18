@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/motion";
 import AboutPortrait from "@/components/sections/AboutPortrait";
@@ -10,6 +11,7 @@ import AboutPortrait from "@/components/sections/AboutPortrait";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
+  const t = useTranslations("about");
   const openRef = useRef<HTMLDivElement | null>(null);
   const statementRef = useRef<HTMLHeadingElement | null>(null);
   const line1Ref = useRef<HTMLSpanElement | null>(null);
@@ -82,10 +84,10 @@ export default function About() {
 
         <h2 className="about-open__statement" ref={statementRef}>
           <span ref={line1Ref} className="about-open__line1" style={{ visibility: "hidden" }}>
-            El código es el medio.
+            {t("line1")}
           </span>
           <span ref={line2Ref} className="about-open__line2" style={{ visibility: "hidden" }}>
-            El criterio es el trabajo.
+            {t("line2")}
           </span>
         </h2>
       </div>

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { useMagnetic } from "@/hooks/useMagnetic";
 import Reveal from "@/components/Reveal";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -10,6 +11,7 @@ import { prefersReducedMotion } from "@/lib/motion";
 const EMAIL = "nicolasespin.dev@gmail.com";
 
 export default function Contact() {
+  const t = useTranslations("contact");
   const dotRef = useMagnetic<HTMLAnchorElement>(0.4);
   const pulseRef = useRef<HTMLSpanElement | null>(null);
 
@@ -55,25 +57,27 @@ export default function Contact() {
             margin: "20px 0 40px",
           }}
         >
-          Innovemos{" "}
-          <em
-            style={{
-              fontFamily: "var(--font-editorial)",
-              fontStyle: "italic",
-              fontWeight: 400,
-              color: "var(--color-signal-soft)",
-            }}
-          >
-            Juntos
-          </em>
-          .
+          {t.rich("heading", {
+            em: (chunks) => (
+              <em
+                style={{
+                  fontFamily: "var(--font-editorial)",
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  color: "var(--color-signal-soft)",
+                }}
+              >
+                {chunks}
+              </em>
+            ),
+          })}
         </h2>
       </Reveal>
 
       <a
         ref={dotRef}
         href={`mailto:${EMAIL}`}
-        aria-label={`Escribir a ${EMAIL}`}
+        aria-label={t("emailAria", { email: EMAIL })}
         data-cursor-hover
         style={{ display: "inline-block", marginBottom: 32 }}
       >

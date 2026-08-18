@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 export default function GlobalError({
   error,
@@ -9,6 +10,7 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations("error");
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -28,7 +30,7 @@ export default function GlobalError({
       }}
     >
       <span className="mono-label" style={{ color: "var(--color-steel)" }}>
-        SEÑAL INTERRUMPIDA
+        {t("label")}
       </span>
       <h1
         style={{
@@ -38,7 +40,7 @@ export default function GlobalError({
           margin: "20px 0 24px",
         }}
       >
-        Algo se rompió del lado del sistema.
+        {t("heading")}
       </h1>
       <button
         type="button"
@@ -52,7 +54,7 @@ export default function GlobalError({
           cursor: "pointer",
         }}
       >
-        Reintentar
+        {t("retry")}
       </button>
     </div>
   );

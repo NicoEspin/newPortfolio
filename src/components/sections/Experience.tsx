@@ -1,8 +1,12 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { experience } from "@/lib/experience";
 import Reveal from "@/components/Reveal";
 import ExperienceTrack from "@/components/sections/ExperienceTrack";
 
 export default function Experience() {
+  const t = useTranslations("experience");
   return (
     <section
       id="experience"
@@ -16,7 +20,7 @@ export default function Experience() {
       <div className="experience-grid">
         <div className="experience-intro">
           <span className="mono-label" style={{ color: "var(--color-steel)" }}>
-            EXPERIENCE
+            {t("label")}
           </span>
 
           <Reveal as="h2" delay={0.05}>
@@ -56,8 +60,7 @@ export default function Experience() {
 
           <Reveal delay={0.12}>
             <p className="reading-measure" style={{ marginTop: 24 }}>
-              Una trayectoria hecha de productos lanzados, sistemas internos y
-              decisiones que tuvieron que funcionar fuera del portfolio.
+              {t("paragraph")}
             </p>
           </Reveal>
 

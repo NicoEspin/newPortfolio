@@ -1,13 +1,11 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { Project } from "@/lib/projects";
 import SignalLink from "@/components/SignalLink";
 
-const STATUS_LABEL: Record<Project["status"], string> = {
-  live: "● LIVE",
-  production: "● IN PRODUCTION",
-  concept: "○ CONCEPT DEMO",
-};
-
 export default function WorkRow({ project }: { project: Project }) {
+  const t = useTranslations();
   return (
     <SignalLink href={`/work/${project.slug}`} className="work-row" data-cursor-hover>
       <div className="work-row__thumb" aria-hidden="true">
@@ -34,9 +32,9 @@ export default function WorkRow({ project }: { project: Project }) {
       </div>
       <span className="mono-label work-row__meta" style={{ color: "var(--color-steel)" }}>
         <span style={{ color: project.status === "live" ? "var(--color-signal)" : "var(--color-steel)" }}>
-          {STATUS_LABEL[project.status]}
+          {t(`common.status.${project.status}`)}
         </span>{" "}
-        · {project.year} · {project.category}
+        · {project.year} · {t(`projects.${project.slug}.category`)}
       </span>
     </SignalLink>
   );

@@ -3,16 +3,11 @@
 import { useMemo, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import type { Project, ProjectType } from "@/lib/projects";
 import { PROJECT_TYPES } from "@/lib/projects";
 import SignalLink from "@/components/SignalLink";
 import { prefersReducedMotion } from "@/lib/motion";
-
-const STATUS_LABEL: Record<Project["status"], string> = {
-  live: "● LIVE",
-  production: "● IN PRODUCTION",
-  concept: "○ CONCEPT",
-};
 
 type FilterValue = ProjectType | "All";
 
@@ -25,6 +20,7 @@ const FILTERS: FilterValue[] = ["All", ...PROJECT_TYPES];
  * this page's job is to be scanned as a gallery, not read as a list.
  */
 export default function WorkIndex({ projects }: { projects: Project[] }) {
+  const t = useTranslations();
   const [filter, setFilter] = useState<FilterValue>("All");
   const gridRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,17 +50,18 @@ export default function WorkIndex({ projects }: { projects: Project[] }) {
 
   return (
     <>
-      <div className="work-index__filters" role="group" aria-label="Filtrar proyectos por tipo">
-        {FILTERS.map((t) => (
+      <div className="work-index__filters" role="group" aria-label={t("workIndex.filtersAria")}>
+        {FILTERS.map((filterValue) => (
           <button
-            key={t}
+            key={filterValue}
             type="button"
-            onClick={() => setFilter(t)}
-            aria-pressed={filter === t}
+            onClick={() => setFilter(filterValue)}
+            aria-pressed={filter === filterValue}
             className="mono-label work-index__filter"
-            data-active={filter === t}
+            data-active={filter === filterValue}
           >
-            {t === "All" ? "TODOS" : t.toUpperCase()} ({counts.get(t)})
+            {filterValue === "All" ? t("workIndex.filterAll") : filterValue.toUpperCase()} (
+            {counts.get(filterValue)})
           </button>
         ))}
       </div>
@@ -93,13 +90,13 @@ export default function WorkIndex({ projects }: { projects: Project[] }) {
                   color: project.status === "live" ? "var(--color-signal)" : "var(--color-paper)",
                 }}
               >
-                {STATUS_LABEL[project.status]}
+                {t(`common.status.${project.status}`)}
               </span>
             </div>
             <div className="work-index__card-body">
               <span className="work-index__card-name">{project.name}</span>
               <span className="mono-label work-index__card-meta">
-                {project.year} · {project.category}
+                {project.year} · {t(`projects.${project.slug}.category`)}
               </span>
             </div>
           </SignalLink>
